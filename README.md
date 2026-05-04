@@ -60,4 +60,61 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 
 Both machines are connected within an isolated virtual network (VMware Fusion) with no external internet exposure.
 
-<img width="1920" height="1080" alt="Screenshot 2026-05-02 at 11 06 26 AM" src="https://github.com/user-attachments/assets/b95951a8-55ac-49e8-be54-074e5746815d" />
+![Lab Architecture](docs/screenshots/Lab_01.png)
+
+---
+
+## 🔧 Installation
+
+> ⚠️ **Note for Ubuntu 26.04 users:** Most online guides target Ubuntu 22.04. The package names below have been updated and verified for Ubuntu 26.04 (Resolute).
+
+### Step 1 — Update the system
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### Step 2 — Install prerequisites
+
+```bash
+sudo apt install -y \
+  build-essential g++ gcc cmake \
+  libpcap-dev libpcre2-dev \
+  zlib1g-dev liblzma-dev \
+  libluajit-5.1-dev libhwloc-dev \
+  libdumbnet-dev bison flex \
+  openssl libssl-dev libnghttp2-dev \
+  autoconf automake libtool pkg-config \
+  libunwind-dev libfl-dev \
+  libgoogle-perftools-dev
+```
+
+> 💡 **Ubuntu 26.04 fix:** `libpcre3-dev` is no longer available — use `libpcre2-dev` instead. `libdnet-dev` is also removed; `libdumbnet-dev` covers it.
+
+### Step 3 — Install LibDAQ from source
+
+Snort 3 requires LibDAQ (Data Acquisition library), which is not available via apt:
+
+```bash
+cd /tmp
+git clone https://github.com/snort3/libdaq.git
+cd libdaq
+./bootstrap
+./configure
+make
+sudo make install
+sudo ldconfig
+```
+
+### Step 4 — Install Snort 3 from source
+
+```bash
+cd /tmp
+git clone https://github.com/snort3/snort3.git
+cd snort3
+./configure_cmake.sh --prefix=/usr/local --enable-tcmalloc
+cd build
+make -j$(nproc)
+sudo make install
+sudo ldconfig
+```
