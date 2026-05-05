@@ -118,3 +118,22 @@ make -j$(nproc)
 sudo make install
 sudo ldconfig
 ```
+
+### Step 5 — Verify installation
+
+```bash
+snort -V
+```
+
+Expected output:
+```
+   ,,_     -*> Snort++ <*-
+  o"  )~   Version 3.12.2.0
+   ''''  
+```
+
+Snort successfully validated the configuration (with 0 warnings).
+
+![Snort Version](docs/screenshots/snort-version.png)
+
+---
