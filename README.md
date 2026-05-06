@@ -137,3 +137,35 @@ Snort successfully validated the configuration (with 0 warnings).
 ![Snort Version](docs/screenshots/snort-version.png)
 
 ---
+
+## 💡 Lessons Learned
+
+- Ubuntu 26.04 requires `libpcre2-dev` instead of the deprecated `libpcre3-dev`
+- LibDAQ must be compiled from source — it is not available in Ubuntu apt repositories
+- Snort 3 uses Lua-based configuration (`.lua`) instead of the `.conf` format used in Snort 2
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Set up isolated virtual network (Kali ↔ Ubuntu)
+- [x] Install Snort 3.12.2.0 on Ubuntu 26.04
+
+---
+
+## 📁 Repository Structure
+
+```
+snort-ids-lab-vmware/
+├── README.md
+└── docs/
+    └── screenshots/
+        ├── Lab_01.png
+        └── snort-version.png
+```
+
+---
+
+## 📄 License
+
+MIT License — see [LICENSE](LICENSE) for details.
