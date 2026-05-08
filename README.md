@@ -9,6 +9,9 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 - [Objectives](#-objectives)
 - [Lab Environment](#️-lab-environment)
 - [Lab Architecture](#-lab-architecture)
+- [Installation](#-installation)
+- [Lessons Learned](#-lessons-learned)
+- [Roadmap](#️-roadmap)
 
 ---
 
@@ -37,11 +40,15 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 #### 🔴 Attacker Machine
 
 - OS: Kali Linux 2026.1
+- Interface: `eth0`
+- IP: `192.168.224.129`
 - Role: Attack simulation (scanning, probing, traffic generation)
 
 #### 🟢 Victim / Detection Machine
 
 - OS: Ubuntu 26.04 LTS (Resolute)
+- Interface: `enp2s0`
+- IP: `192.168.224.128`
 - Snort Version: **3.12.2.0**
 - Role: Snort IDS (Intrusion Detection System)
 
@@ -50,15 +57,15 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 ## 🧠 Lab Architecture
 
 ```
-┌─────────────────────────┐        Isolated Virtual Network        ┌──────────────────────────┐
-│   🔴 Kali Linux          │ ─────────────────────────────────────► │   🟢 Ubuntu 26.04        │
-│   Attacker               │        (VMware Host-Only Network)      │   Snort 3.12.2.0 IDS     │
-│   Attack Tools:          │                                        │   Monitors & Alerts on   │
-│   nmap, hping3, etc.     │                                        │   all incoming traffic   │
-└─────────────────────────┘                                        └──────────────────────────┘
+┌─────────────────────────┐     Isolated VMware Host-Only Network      ┌──────────────────────────┐
+│   🔴 Kali Linux          │ ──────────────────────────────────────────► │   🟢 Ubuntu 26.04        │
+│   192.168.224.129        │          Attack traffic                     │   192.168.224.128        │
+│   Attacker               │ ◄────────────────────────────────────────── │   Snort 3.12.2.0 IDS     │
+│   nmap · hping3          │          Snort alerts                       │   Monitors all traffic   │
+└─────────────────────────┘                                             └──────────────────────────┘
 ```
 
-Both machines are connected within an isolated virtual network (VMware Fusion) with no external internet exposure.
+Both machines are on the same `/24` subnet within an isolated VMware Fusion host-only network with no external internet exposure.
 
 ![Lab Architecture](docs/screenshots/Lab_01.png)
 
