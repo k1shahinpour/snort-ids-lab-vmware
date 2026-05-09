@@ -9,6 +9,7 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 - [Objectives](#-objectives)
 - [Lab Environment](#️-lab-environment)
 - [Lab Architecture](#-lab-architecture)
+- [Network Configuration](#-network-configuration)
 - [Installation](#-installation)
 - [Lessons Learned](#-lessons-learned)
 - [Roadmap](#️-roadmap)
@@ -68,6 +69,30 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 Both machines are on the same `/24` subnet within an isolated VMware Fusion host-only network with no external internet exposure.
 
 ![Lab Architecture](docs/screenshots/Lab_01.png)
+
+---
+
+## 🌐 Network Configuration
+
+Before running Snort, the Ubuntu network interface must be set to promiscuous mode so Snort can capture all traffic on the segment, not just traffic addressed to itself.
+
+```bash
+sudo ip link set enp2s0 promisc on
+```
+
+Verify promiscuous mode is active:
+
+```bash
+ip link show enp2s0
+```
+
+Expected output includes `PROMISC` in the flags:
+
+```
+2: enp2s0: <BROADCAST,MULTICAST,PROMISC,UP,LOWER_UP> mtu 1500 ...
+```
+
+> ⚠️ **VMware Fusion note:** Enabling promiscuous mode on a VM triggers a macOS security prompt asking for the host machine's administrator password. This is expected — VMware requires host-level permission to allow the VM to monitor all network traffic.
 
 ---
 
@@ -157,6 +182,7 @@ Snort successfully validated the configuration (with 0 warnings).
 
 - [x] Set up isolated virtual network (Kali ↔ Ubuntu)
 - [x] Install Snort 3.12.2.0 on Ubuntu 26.04
+- [x] Set interface to promiscuous mode
 
 ---
 
