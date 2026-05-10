@@ -11,6 +11,7 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 - [Lab Architecture](#-lab-architecture)
 - [Network Configuration](#-network-configuration)
 - [Installation](#-installation)
+- [Running Snort in IDS Mode](#-running-snort-in-ids-mode)
 - [Lessons Learned](#-lessons-learned)
 - [Roadmap](#️-roadmap)
 
@@ -170,11 +171,45 @@ Snort successfully validated the configuration (with 0 warnings).
 
 ---
 
+## 🚀 Running Snort in IDS Mode
+
+### Step 1 — Create the rules file
+
+```bash
+sudo mkdir -p /usr/local/etc/snort/rules
+sudo nano /usr/local/etc/snort/rules/local.rules
+```
+
+Add your rules, save with `Ctrl+O` → Enter → `Ctrl+X`.
+
+### Step 2 — Run Snort
+
+```bash
+sudo snort -i enp2s0 -A alert_fast -s 65535 -k none \
+-R /usr/local/etc/snort/rules/local.rules
+```
+
+**Flag explanation:**
+
+| Flag | Meaning |
+|------|---------|
+| `-i enp2s0` | Listen on this network interface |
+| `-A alert_fast` | Print alerts to terminal in fast format |
+| `-s 65535` | Snaplen — capture full packets |
+| `-k none` | Ignore checksum errors (common in VMs) |
+| `-R` | Load custom rules file |
+
+> 💡 In Snort 3.12.2.0, `-A alert_fast` prints alerts directly to the terminal — no log directory flag required for basic IDS monitoring.
+
+---
+
 ## 💡 Lessons Learned
 
-- Ubuntu 26.04 requires `libpcre2-dev` instead of the deprecated `libpcre3-dev`
-- LibDAQ must be compiled from source — it is not available in Ubuntu apt repositories
-- Snort 3 uses Lua-based configuration (`.lua`) instead of the `.conf` format used in Snort 2
+- **Ubuntu 26.04 package changes:** `libpcre3-dev` is deprecated — use `libpcre2-dev`. `libdnet-dev` is also gone; `libdumbnet-dev` covers it. Most online Snort 3 guides target Ubuntu 22.04 and will fail on 26.04 without these fixes.
+- **LibDAQ must be compiled from source** — it is not available in Ubuntu apt repositories.
+- **Snort 3 uses Lua-based configuration** (`.lua` files) instead of the `.conf` format used in Snort 2.
+- **Snort 3.12.2.0 alert output:** `-A alert_fast` prints alerts directly to the terminal. No log directory flag (`-l`) is required for basic IDS monitoring.
+- **Promiscuous mode on VMware Fusion** triggers a macOS host-level security prompt — enter the Mac administrator password, not the VM password.
 
 ---
 
@@ -183,6 +218,7 @@ Snort successfully validated the configuration (with 0 warnings).
 - [x] Set up isolated virtual network (Kali ↔ Ubuntu)
 - [x] Install Snort 3.12.2.0 on Ubuntu 26.04
 - [x] Set interface to promiscuous mode
+- [x] Write first custom Snort rule (ICMP detection)
 
 ---
 
