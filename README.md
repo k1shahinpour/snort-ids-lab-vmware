@@ -12,7 +12,7 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 - [Network Configuration](#-network-configuration)
 - [Installation](#-installation)
 - [Running Snort in IDS Mode](#-running-snort-in-ids-mode)
-- [Attack Scenarios](#-attack-scenarios)
+- [Attack Scenarios](#️-attack-scenarios)
 - [Lessons Learned](#-lessons-learned)
 - [Roadmap](#️-roadmap)
 
