@@ -12,6 +12,7 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 - [Network Configuration](#-network-configuration)
 - [Installation](#-installation)
 - [Running Snort in IDS Mode](#-running-snort-in-ids-mode)
+- [Attack Scenarios](#-attack-scenarios)
 - [Lessons Learned](#-lessons-learned)
 - [Roadmap](#️-roadmap)
 
@@ -203,6 +204,30 @@ sudo snort -i enp2s0 -A alert_fast -s 65535 -k none \
 
 ---
 
+## ⚔️ Attack Scenarios
+
+| # | Attack Type | Tool | Snort Rule SID | Detected |
+|---|-------------|------|----------------|----------|
+| 1 | ICMP Ping Sweep | ping | 1000001 | ✅ |
+
+### Scenario 1 — ICMP Ping Detection ✅
+
+**Attack (from Kali):**
+```bash
+ping 192.168.224.128
+```
+
+**Snort alert output:**
+```
+05/08-12:13:05.003407 [**] [1:1000001:1] "ICMP Ping Detected" [**] [Priority: 0] {ICMP} 192.168.224.129 -> 192.168.224.128
+05/08-12:13:06.025939 [**] [1:1000001:1] "ICMP Ping Detected" [**] [Priority: 0] {ICMP} 192.168.224.129 -> 192.168.224.128
+05/08-12:13:07.029527 [**] [1:1000001:1] "ICMP Ping Detected" [**] [Priority: 0] {ICMP} 192.168.224.129 -> 192.168.224.128
+05/08-12:13:08.033378 [**] [1:1000001:1] "ICMP Ping Detected" [**] [Priority: 0] {ICMP} 192.168.224.129 -> 192.168.224.128
+```
+
+![ICMP Detection](docs/screenshots/alert-icmp-detection.png)
+
+---
 ## 💡 Lessons Learned
 
 - **Ubuntu 26.04 package changes:** `libpcre3-dev` is deprecated — use `libpcre2-dev`. `libdnet-dev` is also gone; `libdumbnet-dev` covers it. Most online Snort 3 guides target Ubuntu 22.04 and will fail on 26.04 without these fixes.
@@ -231,6 +256,7 @@ snort-ids-lab-vmware/
     └── screenshots/
         ├── Lab_01.png
         └── snort-version.png
+        └── alert-icmp-detection.png
 ```
 
 ---
