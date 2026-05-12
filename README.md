@@ -13,6 +13,7 @@ Practical Snort 3 IDS lab demonstrating installation, rule writing, packet analy
 - [Installation](#-installation)
 - [Running Snort in IDS Mode](#-running-snort-in-ids-mode)
 - [Attack Scenarios](#️-attack-scenarios)
+- [Custom Snort Rules](#-custom-snort-rules)
 - [Lessons Learned](#-lessons-learned)
 - [Roadmap](#️-roadmap)
 
@@ -123,7 +124,9 @@ sudo apt install -y \
   libgoogle-perftools-dev
 ```
 
-> 💡 **Ubuntu 26.04 fix:** `libpcre3-dev` is no longer available — use `libpcre2-dev` instead. `libdnet-dev` is also removed; `libdumbnet-dev` covers it.
+> 💡 **Ubuntu 26.04 fixes:**
+> - `libpcre3-dev` is no longer available → use `libpcre2-dev` instead
+> - `libdnet-dev` is removed → `libdumbnet-dev` covers it
 
 ### Step 3 — Install LibDAQ from source
 
@@ -152,6 +155,7 @@ make -j$(nproc)
 sudo make install
 sudo ldconfig
 ```
+> ⏱️ The `make` step takes 5–15 minutes. `$(nproc)` uses all available CPU cores to speed it up.
 
 ### Step 5 — Verify installation
 
@@ -228,6 +232,20 @@ ping 192.168.224.128
 ![ICMP Detection](docs/screenshots/alert-icmp-detection.png)
 
 ---
+
+## 📜 Custom Snort Rules
+
+Rules are stored in `/usr/local/etc/snort/rules/local.rules` on the Ubuntu VM and mirrored in `rules/local.rules` in this repository.
+
+```
+# SID 1000001 — Detect any ICMP ping to the defender machine
+alert icmp any any -> 192.168.224.128 any (msg:"ICMP Ping Detected"; sid:1000001; rev:1;)
+```
+
+> 💡 **Rule design note:** The source is intentionally set to `any` rather than a specific IP. An IDS should alert on ICMP from any source, not just known attackers.
+
+---
+
 ## 💡 Lessons Learned
 
 - **Ubuntu 26.04 package changes:** `libpcre3-dev` is deprecated — use `libpcre2-dev`. `libdnet-dev` is also gone; `libdumbnet-dev` covers it. Most online Snort 3 guides target Ubuntu 22.04 and will fail on 26.04 without these fixes.
@@ -235,6 +253,7 @@ ping 192.168.224.128
 - **Snort 3 uses Lua-based configuration** (`.lua` files) instead of the `.conf` format used in Snort 2.
 - **Snort 3.12.2.0 alert output:** `-A alert_fast` prints alerts directly to the terminal. No log directory flag (`-l`) is required for basic IDS monitoring.
 - **Promiscuous mode on VMware Fusion** triggers a macOS host-level security prompt — enter the Mac administrator password, not the VM password.
+- **Rule specificity matters:** Setting the source to `any` is more realistic and correct for general detection — overly specific rules miss threats from unknown sources.
 
 ---
 
@@ -244,6 +263,7 @@ ping 192.168.224.128
 - [x] Install Snort 3.12.2.0 on Ubuntu 26.04
 - [x] Set interface to promiscuous mode
 - [x] Write first custom Snort rule (ICMP detection)
+- [x] Successfully detect ICMP ping from Kali
 
 ---
 
