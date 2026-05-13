@@ -1,0 +1,1 @@
+alert icmp any any -> 192.168.224.128 any (msg:"ICMP Ping Detected"; sid:1000001; rev:1;)
