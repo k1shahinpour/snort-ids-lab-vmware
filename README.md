@@ -272,6 +272,8 @@ alert icmp any any -> 192.168.224.128 any (msg:"ICMP Ping Detected"; sid:1000001
 ```
 snort-ids-lab-vmware/
 ├── README.md
+├── rules/
+│   └── local.rules
 └── docs/
     └── screenshots/
         ├── Lab_01.png
