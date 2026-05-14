@@ -213,6 +213,7 @@ sudo snort -i enp2s0 -A alert_fast -s 65535 -k none \
 | # | Attack Type | Tool | Snort Rule SID | Detected |
 |---|-------------|------|----------------|----------|
 | 1 | ICMP Ping Sweep | ping | 1000001 | ✅ |
+| 2 | TCP SYN Port Scan | nmap -sS | 1000002 | ✅ |
 
 ### Scenario 1 — ICMP Ping Detection ✅
 
@@ -230,6 +231,27 @@ ping 192.168.224.128
 ```
 
 ![ICMP Detection](docs/screenshots/alert-icmp-detection.png)
+
+---
+
+### Scenario 2 — TCP SYN Port Scan Detection ✅
+
+**Attack (from Kali):**
+```bash
+nmap -sS 192.168.224.128
+```
+
+**What it does:** Sends SYN packets to all 1000 common ports in under a second, probing for open services without completing the TCP handshake.
+
+**Snort alert output:**
+```
+05/14-23:16:02.592709 [**] [1:1000002:1] "TCP Port Scan Detected" [**] [Priority: 0] {TCP} 192.168.224.129:90 -> 192.168.224.128:32769
+05/14-23:16:02.592709 [**] [1:1000002:1] "TCP Port Scan Detected" [**] [Priority: 0] {TCP} 192.168.224.129:90 -> 192.168.224.128:264
+05/14-23:16:02.592709 [**] [1:1000002:1] "TCP Port Scan Detected" [**] [Priority: 0] {TCP} 192.168.224.129:90 -> 192.168.224.128:8500
+05/14-23:16:02.592790 [**] [1:1000002:1] "TCP Port Scan Detected" [**] [Priority: 0] {TCP} 192.168.224.129:90 -> 192.168.224.128:34572
+```
+
+> nmap completed the scan of 1000 ports in **0.68 seconds**. Snort detected every SYN packet.
 
 ---
 
