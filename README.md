@@ -253,6 +253,8 @@ nmap -sS 192.168.224.128
 
 > nmap completed the scan of 1000 ports in **0.68 seconds**. Snort detected every SYN packet.
 
+![TCP Scan Detection](docs/screenshots/alert-tcp-scan.png)
+
 ---
 
 ## 📜 Custom Snort Rules
@@ -286,6 +288,8 @@ alert icmp any any -> 192.168.224.128 any (msg:"ICMP Ping Detected"; sid:1000001
 - [x] Set interface to promiscuous mode
 - [x] Write first custom Snort rule (ICMP detection)
 - [x] Successfully detect ICMP ping from Kali
+- [x] Write TCP SYN port scan detection rule
+- [x] Successfully detect nmap SYN scan from Kali
 
 ---
 
