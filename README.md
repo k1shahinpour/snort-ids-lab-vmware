@@ -264,6 +264,9 @@ Rules are stored in `/usr/local/etc/snort/rules/local.rules` on the Ubuntu VM an
 ```
 # SID 1000001 — Detect any ICMP ping to the defender machine
 alert icmp any any -> 192.168.224.128 any (msg:"ICMP Ping Detected"; sid:1000001; rev:1;)
+
+# SID 1000002 — Detect TCP SYN port scan (5+ SYN packets in 3 seconds from same source)
+alert tcp any any -> 192.168.224.128 any (msg:"TCP Port Scan Detected"; flags:S; detection_filter:track by_src, count 5, seconds 3; sid:1000002; rev:1;)
 ```
 
 > 💡 **Rule design note:** The source is intentionally set to `any` rather than a specific IP. An IDS should alert on ICMP from any source, not just known attackers.
@@ -305,6 +308,7 @@ snort-ids-lab-vmware/
         ├── Lab_01.png
         └── snort-version.png
         └── alert-icmp-detection.png
+        └── alert-tcp-scan.png
 ```
 
 ---
