@@ -269,7 +269,9 @@ alert icmp any any -> 192.168.224.128 any (msg:"ICMP Ping Detected"; sid:1000001
 alert tcp any any -> 192.168.224.128 any (msg:"TCP Port Scan Detected"; flags:S; detection_filter:track by_src, count 5, seconds 3; sid:1000002; rev:1;)
 ```
 
-> 💡 **Rule design note:** The source is intentionally set to `any` rather than a specific IP. An IDS should alert on ICMP from any source, not just known attackers.
+> 💡 **Rule design notes:**
+> - Source is set to `any` — an IDS should alert on traffic from any source, not just known attackers
+> - `detection_filter` is used instead of `threshold` — the `threshold` keyword was removed in Snort 3
 
 ---
 
@@ -281,6 +283,7 @@ alert tcp any any -> 192.168.224.128 any (msg:"TCP Port Scan Detected"; flags:S;
 - **Snort 3.12.2.0 alert output:** `-A alert_fast` prints alerts directly to the terminal. No log directory flag (`-l`) is required for basic IDS monitoring.
 - **Promiscuous mode on VMware Fusion** triggers a macOS host-level security prompt — enter the Mac administrator password, not the VM password.
 - **Rule specificity matters:** Setting the source to `any` is more realistic and correct for general detection — overly specific rules miss threats from unknown sources.
+- **`threshold` keyword removed in Snort 3:** Use `detection_filter` instead for rate-based detection. Rules using `threshold` will cause a fatal error on startup.
 
 ---
 
