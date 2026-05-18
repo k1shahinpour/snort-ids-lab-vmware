@@ -284,7 +284,8 @@ alert tcp any any -> 192.168.224.128 any (msg:"TCP Port Scan Detected"; flags:S;
 - **Promiscuous mode on VMware Fusion** triggers a macOS host-level security prompt — enter the Mac administrator password, not the VM password.
 - **Rule specificity matters:** Setting the source to `any` is more realistic and correct for general detection — overly specific rules miss threats from unknown sources.
 - **`threshold` keyword removed in Snort 3:** Use `detection_filter` instead for rate-based detection. Rules using `threshold` will cause a fatal error on startup.
-
+- **`detection_filter` behavior:** Snort fires one alert per packet once the threshold is crossed — a single nmap SYN scan against 1000 ports generates hundreds of alerts, one per detected SYN packet.
+  
 ---
 
 ## 🗺️ Roadmap
