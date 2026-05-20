@@ -214,6 +214,7 @@ sudo snort -i enp2s0 -A alert_fast -s 65535 -k none \
 |---|-------------|------|----------------|----------|
 | 1 | ICMP Ping Sweep | ping | 1000001 | ✅ |
 | 2 | TCP SYN Port Scan | nmap -sS | 1000002 | ✅ |
+| 3 | SYN Flood DoS | hping3 | 1000003 | ✅ |
 
 ### Scenario 1 — ICMP Ping Detection ✅
 
@@ -254,6 +255,28 @@ nmap -sS 192.168.224.128
 > nmap completed the scan of 1000 ports in **0.68 seconds**. Snort detected every SYN packet.
 
 ![TCP Scan Detection](docs/screenshots/alert-tcp-scan.png)
+
+---
+### Scenario 3 — SYN Flood DoS Detection ✅
+
+**Attack (from Kali):**
+```bash
+sudo hping3 -S --flood -V -p 80 192.168.224.128
+```
+
+**What it does:** Sends SYN packets as fast as possible to port 80, overwhelming the target with half-open TCP connections and exhausting its resources.
+
+**hping3 statistics:**
+```
+1465764 packets transmitted, 0 packets received, 100% packet loss
+```
+
+**Snort alert output:**
+```
+05/20-22:01:26.427149 [**] [1:1000003:1] "SYN Flood DoS Detected" [**] [Priority: 0] {TCP} 192.168.224.129:255 -> 192.168.224.128:80
+05/20-22:01:26.427149 [**] [1:1000003:1] "SYN Flood DoS Detected" [**] [Priority: 0] {TCP} 192.168.224.129:255 -> 192.168.224.128:80
+05/20-22:01:26.427150 [**] [1:1000003:1] "SYN Flood DoS Detected" [**] [Priority: 0] {TCP} 192.168.224.129:255 -> 192.168.224.128:80
+```
 
 ---
 
