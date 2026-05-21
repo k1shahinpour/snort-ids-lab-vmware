@@ -321,6 +321,8 @@ alert tcp any any -> 192.168.224.128 any (msg:"TCP Port Scan Detected"; flags:S;
 - [x] Successfully detect ICMP ping from Kali
 - [x] Write TCP SYN port scan detection rule
 - [x] Successfully detect nmap SYN scan from Kali
+- [x] Write and test SYN flood DoS detection rule
+- [x] Successfully detect hping3 SYN flood from Kali
 
 ---
 
