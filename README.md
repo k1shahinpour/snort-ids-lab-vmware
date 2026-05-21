@@ -295,6 +295,7 @@ alert tcp any any -> 192.168.224.128 any (msg:"TCP Port Scan Detected"; flags:S;
 > 💡 **Rule design notes:**
 > - Source is set to `any` — an IDS should alert on traffic from any source, not just known attackers
 > - `detection_filter` is used instead of `threshold` — the `threshold` keyword was removed in Snort 3
+> - Port scan tracks `by_src` (same source hitting many ports); SYN flood tracks `by_dst` (massive volume hitting the destination)
 
 ---
 
