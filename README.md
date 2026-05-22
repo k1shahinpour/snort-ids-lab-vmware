@@ -278,6 +278,10 @@ sudo hping3 -S --flood -V -p 80 192.168.224.128
 05/20-22:01:26.427150 [**] [1:1000003:1] "SYN Flood DoS Detected" [**] [Priority: 0] {TCP} 192.168.224.129:255 -> 192.168.224.128:80
 ```
 
+> **Note:** Both SID 1000002 (port scan) and SID 1000003 (SYN flood) fired simultaneously. This is expected — a SYN flood also matches the high-rate SYN pattern of the port scan rule. In a production environment, rule tuning and suppression lists would be used to reduce this overlap.
+
+![SYN Flood Detection](docs/screenshots/alert-syn-flood.png)
+
 ---
 
 ## 📜 Custom Snort Rules
@@ -341,6 +345,7 @@ snort-ids-lab-vmware/
         └── snort-version.png
         └── alert-icmp-detection.png
         └── alert-tcp-scan.png
+        └── alert-syn-flood.png
 ```
 
 ---
