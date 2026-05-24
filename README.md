@@ -284,6 +284,25 @@ sudo hping3 -S --flood -V -p 80 192.168.224.128
 
 ---
 
+### Scenario 4 — OS Fingerprinting Detection ✅
+
+**Attack (from Kali):**
+```bash
+sudo nmap -O 192.168.224.128
+```
+
+**What it does:** Sends 16 specially crafted TCP/IP probes (SEQ, OPS, WIN, T1–T7, U1, IE) to determine the target's operating system by analyzing how its TCP stack responds.
+
+**Detection approach — why this was challenging:**
+
+Standard Snort rules targeting unusual TCP flag combinations (NULL, XMAS, SYN+FIN) did not trigger. To diagnose the root cause, `tcpdump` was used to verify whether nmap's malformed packets were actually arriving at the Ubuntu VM:
+
+```bash
+sudo tcpdump -i enp2s0 -vvv 'tcp[tcpflags] & (tcp-fin|tcp-syn|tcp-rst|tcp-push|tcp-urg) != 0'
+```
+
+---
+
 ## 📜 Custom Snort Rules
 
 Rules are stored in `/usr/local/etc/snort/rules/local.rules` on the Ubuntu VM and mirrored in `rules/local.rules` in this repository.
