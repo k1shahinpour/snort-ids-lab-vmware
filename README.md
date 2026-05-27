@@ -301,6 +301,18 @@ Standard Snort rules targeting unusual TCP flag combinations (NULL, XMAS, SYN+FI
 sudo tcpdump -i enp2s0 -vvv 'tcp[tcpflags] & (tcp-fin|tcp-syn|tcp-rst|tcp-push|tcp-urg) != 0'
 ```
 
+The tcpdump output confirmed that nmap's `FPU` (FIN+PUSH+URG) probes **were** arriving at the VM. The issue was that Snort 3's rule engine handles these flag combinations differently from Snort 2. Rather than targeting specific flag combinations, the reliable detection signature was identified from the tcpdump evidence: **nmap sends all its OS fingerprinting probes exclusively to port 1 (tcpmux)**, which is never targeted by normal traffic.
+
+**Snort alert output:**
+```
+05/24-22:05:10.358036 [**] [1:1000004:3] "OS Fingerprinting - Nmap Probe to tcpmux Detected" [**] [Priority: 0] {TCP} 192.168.224.129:49802 -> 192.168.224.128:1
+05/24-22:05:10.402612 [**] [1:1000004:3] "OS Fingerprinting - Nmap Probe to tcpmux Detected" [**] [Priority: 0] {TCP} 192.168.224.129:49803 -> 192.168.224.128:1
+05/24-22:05:10.427612 [**] [1:1000004:3] "OS Fingerprinting - Nmap Probe to tcpmux Detected" [**] [Priority: 0] {TCP} 192.168.224.129:50058 -> 192.168.224.128:1
+05/24-22:05:11.537981 [**] [1:1000004:3] "OS Fingerprinting - Nmap Probe to tcpmux Detected" [**] [Priority: 0] {TCP} 192.168.224.129:50059 -> 192.168.224.128:1
+```
+
+![OS Fingerprinting Detection](docs/screenshots/alert-os-fingerprint.png)
+
 ---
 
 ## 📜 Custom Snort Rules
@@ -313,6 +325,10 @@ alert icmp any any -> 192.168.224.128 any (msg:"ICMP Ping Detected"; sid:1000001
 
 # SID 1000002 — Detect TCP SYN port scan (5+ SYN packets in 3 seconds from same source)
 alert tcp any any -> 192.168.224.128 any (msg:"TCP Port Scan Detected"; flags:S; detection_filter:track by_src, count 5, seconds 3; sid:1000002; rev:1;)
+
+# SID 1000003 — Detect SYN Flood DoS (100+ SYN packets in 1 second to same destination)
+alert tcp any any -> 192.168.224.128 any (msg:"SYN Flood DoS Detected"; flags:S; detection_filter:track by_dst, count 100, seconds 1; sid:1000003; rev:1;)
+
 ```
 
 > 💡 **Rule design notes:**
@@ -365,6 +381,7 @@ snort-ids-lab-vmware/
         └── alert-icmp-detection.png
         └── alert-tcp-scan.png
         └── alert-syn-flood.png
+        └── alert-os-fingerprint.png
 ```
 
 ---
