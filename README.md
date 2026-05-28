@@ -329,12 +329,16 @@ alert tcp any any -> 192.168.224.128 any (msg:"TCP Port Scan Detected"; flags:S;
 # SID 1000003 — Detect SYN Flood DoS (100+ SYN packets in 1 second to same destination)
 alert tcp any any -> 192.168.224.128 any (msg:"SYN Flood DoS Detected"; flags:S; detection_filter:track by_dst, count 100, seconds 1; sid:1000003; rev:1;)
 
+# SID 1000004 — Detect nmap OS fingerprinting via tcpmux probes (port 1)
+alert tcp any any -> 192.168.224.128 1 (msg:"OS Fingerprinting - Nmap Probe to tcpmux Detected"; sid:1000004; rev:3;)
+
 ```
 
 > 💡 **Rule design notes:**
 > - Source is set to `any` — an IDS should alert on traffic from any source, not just known attackers
 > - `detection_filter` is used instead of `threshold` — the `threshold` keyword was removed in Snort 3
 > - Port scan tracks `by_src` (same source hitting many ports); SYN flood tracks `by_dst` (massive volume hitting the destination)
+> - OS fingerprinting detected via port 1 (tcpmux) — nmap sends all its OS probes to this port exclusively; normal traffic never targets port 1
 
 ---
 
@@ -364,6 +368,8 @@ alert tcp any any -> 192.168.224.128 any (msg:"SYN Flood DoS Detected"; flags:S;
 - [x] Successfully detect nmap SYN scan from Kali
 - [x] Write and test SYN flood DoS detection rule
 - [x] Successfully detect hping3 SYN flood from Kali
+- [x] Write and test OS fingerprinting detection rule
+- [x] Successfully detect nmap -O OS fingerprinting from Kali
 
 ---
 
