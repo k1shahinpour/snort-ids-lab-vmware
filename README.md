@@ -354,7 +354,11 @@ alert tcp any any -> 192.168.224.128 1 (msg:"OS Fingerprinting - Nmap Probe to t
 - **`detection_filter` behavior:** Snort fires one alert per packet once the threshold is crossed — a single nmap SYN scan against 1000 ports generates hundreds of alerts, one per detected SYN packet.
 - **Rule overlap is normal:** A SYN flood also triggers port scan rules since both involve high-rate SYN packets. In production, suppression lists and rule tuning are used to manage this.
 - **`detection_filter` tracks differently per use case:** Use `by_src` to detect scanning behavior (one source, many destinations); use `by_dst` to detect flood behavior (many sources, one destination overwhelmed).
-  
+- **Snort 3 flag-based rules behave differently from Snort 2:** Rules targeting unusual TCP flag combinations (NULL, XMAS, SYN+FIN) for OS fingerprinting detection did not fire even when those packets were confirmed present via `tcpdump`. Snort 3's stream normalization layer may reassemble or discard these before rule evaluation.
+- **Use `tcpdump` to verify packet delivery before blaming rules:** When a rule doesn't fire, run `tcpdump` simultaneously with the attack to confirm whether the packets are actually reaching the interface. If tcpdump sees them but Snort doesn't, the issue is in the rule logic or Snort's preprocessors — not the network.
+- **nmap OS fingerprinting always probes port 1 (tcpmux):** All 16 nmap `-O` probes target port 1. Since normal traffic never targets this port, it is a reliable and low-false-positive detection signature in this environment.
+- **Forensic approach to rule writing:** When standard signatures fail, packet capture analysis (tcpdump) reveals behavioral patterns that can be used to write effective alternative detection rules.
+
 ---
 
 ## 🗺️ Roadmap
